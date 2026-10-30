@@ -29,6 +29,9 @@ Route::get('/verify/sertifikat/{token}', [VerifyController::class, 'sertifikat']
 Route::get('/verify/{token}', [VerifyController::class, 'show'])
     ->name('verify.show');
 
+// Kebijakan privasi aplikasi & situs (publik, dipakai juga untuk listing Play Store)
+Route::view('/kebijakan-privasi', 'privacy')->name('privacy');
+
 // Auth routes dari Breeze
 require __DIR__.'/auth.php';
 

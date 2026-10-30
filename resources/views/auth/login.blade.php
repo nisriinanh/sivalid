@@ -503,6 +503,8 @@
 
         <div class="login-footer">
             <a href="{{ route('password.request') }}">Lupa password?</a>
+            <span style="color: var(--text-secondary); margin: 0 8px;">&middot;</span>
+            <a href="{{ route('privacy') }}">Kebijakan Privasi</a>
         </div>
     </div>
 
