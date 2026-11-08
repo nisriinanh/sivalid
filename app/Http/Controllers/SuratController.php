@@ -6,10 +6,10 @@ use App\Models\Surat;
 use App\Models\User;
 use App\Models\Setting;
 use App\Mail\SuratDiajukan;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Smalot\PdfParser\Parser;
 use setasign\Fpdi\Fpdi;
@@ -143,7 +143,7 @@ public function index(Request $request)
         $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
         $kepala = $this->findKepalaForUnit($unitId);
         if ($kepala) {
-            Mail::to($kepala->email)->send(new SuratDiajukan($suratFresh, $kepala));
+            Notifier::mail($kepala->email, new SuratDiajukan($suratFresh, $kepala), 'Gagal kirim email pengajuan surat');
         }
 
         return redirect()->route('surat.index')
@@ -260,7 +260,7 @@ public function index(Request $request)
         $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
         $kepala = $this->findKepalaForUnit($surat->unit_id);
         if ($kepala) {
-            Mail::to($kepala->email)->send(new SuratDiajukan($suratFresh, $kepala));
+            Notifier::mail($kepala->email, new SuratDiajukan($suratFresh, $kepala), 'Gagal kirim email pengajuan surat');
         }
 
         return redirect()->route('surat.index')
@@ -309,7 +309,7 @@ public function index(Request $request)
         $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
         $kepala = $this->findKepalaForUnit($unit->id);
         if ($kepala) {
-            Mail::to($kepala->email)->send(new SuratDiajukan($suratFresh, $kepala));
+            Notifier::mail($kepala->email, new SuratDiajukan($suratFresh, $kepala), 'Gagal kirim email pengajuan surat');
         }
 
         return redirect()->route('surat.index')
@@ -377,7 +377,7 @@ public function index(Request $request)
         $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
         $kepala = $this->findKepalaForUnit($surat->unit_id);
         if ($kepala) {
-            Mail::to($kepala->email)->send(new SuratDiajukan($suratFresh, $kepala));
+            Notifier::mail($kepala->email, new SuratDiajukan($suratFresh, $kepala), 'Gagal kirim email pengajuan surat');
         }
 
         return redirect()->route('surat.index')

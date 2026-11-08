@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Sertifikat;
 use App\Models\User;
 use App\Mail\SertifikatDiajukan;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
@@ -81,14 +81,12 @@ class SertifikatController extends Controller
             'submitted_at' => now(),
         ]);
 
-        try {
-            $kepala = User::where('role', 'kepala')->where('is_active', true)->first();
-            if ($kepala) {
-                $sertifikatFresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
-                Mail::to($kepala->email)->send(new SertifikatDiajukan($sertifikatFresh));
+        $kepala = User::where('role', 'kepala')->where('is_active', true)->first();
+        if ($kepala) {
+            $sertifikatFresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
+            if ($sertifikatFresh) {
+                Notifier::mail($kepala->email, new SertifikatDiajukan($sertifikatFresh), 'Gagal kirim email pengajuan sertifikat');
             }
-        } catch (\Throwable $e) {
-            Log::error('Gagal kirim email: ' . $e->getMessage());
         }
 
         return response()->json([
@@ -164,14 +162,12 @@ class SertifikatController extends Controller
             'submitted_at' => now(),
         ]);
 
-        try {
-            $kepala = User::where('role', 'kepala')->where('is_active', true)->first();
-            if ($kepala) {
-                $sertifikatFresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
-                Mail::to($kepala->email)->send(new SertifikatDiajukan($sertifikatFresh));
+        $kepala = User::where('role', 'kepala')->where('is_active', true)->first();
+        if ($kepala) {
+            $sertifikatFresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
+            if ($sertifikatFresh) {
+                Notifier::mail($kepala->email, new SertifikatDiajukan($sertifikatFresh), 'Gagal kirim email pengajuan sertifikat');
             }
-        } catch (\Throwable $e) {
-            Log::error('Gagal kirim email: ' . $e->getMessage());
         }
 
         return response()->json([

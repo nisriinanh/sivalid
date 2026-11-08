@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Sertifikat;
 use App\Models\User;
 use App\Services\FcmService;
+use App\Support\Notifier;
 use Illuminate\Support\Str;
 
 class SertifikatObserver
@@ -49,12 +50,12 @@ class SertifikatObserver
         $uploader = $sertifikat->uploader?->name ?? 'Staff';
         $jenis = $sertifikat->jenis_sertifikat ?: 'Sertifikat';
 
-        app(FcmService::class)->sendToUsers(
+        Notifier::fcm(fn () => app(FcmService::class)->sendToUsers(
             $userIds,
             'Sertifikat Menunggu Validasi',
             Str::limit("{$jenis} dari {$uploader}", 140),
             ['type' => 'sertifikat', 'scope' => 'validasi', 'id' => (string) $sertifikat->id],
-        );
+        ));
     }
 
     private function notifyOwner(Sertifikat $sertifikat): void
@@ -70,11 +71,11 @@ class SertifikatObserver
             ? "{$judul} telah selesai dan siap diunduh."
             : Str::limit("{$judul} perlu direvisi. " . ($sertifikat->catatan_revisi ?? ''), 140);
 
-        app(FcmService::class)->sendToUsers(
+        Notifier::fcm(fn () => app(FcmService::class)->sendToUsers(
             [$sertifikat->uploaded_by],
             $approved ? 'Sertifikat Selesai' : 'Sertifikat Perlu Direvisi',
             $body,
             ['type' => 'sertifikat', 'scope' => 'status', 'id' => (string) $sertifikat->id],
-        );
+        ));
     }
 }

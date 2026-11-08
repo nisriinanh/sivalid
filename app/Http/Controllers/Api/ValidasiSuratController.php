@@ -7,10 +7,10 @@ use App\Models\Surat;
 use App\Models\Unit;
 use App\Mail\SuratDisetujui;
 use App\Mail\SuratDirevisi;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use setasign\Fpdi\Fpdi;
 
 class ValidasiSuratController extends Controller
@@ -383,25 +383,17 @@ class ValidasiSuratController extends Controller
 
     private function sendApprovalEmail(Surat $surat): void
     {
-        try {
-            $fresh = Surat::with(['user', 'validator'])->find($surat->id);
-            if ($fresh->user && $fresh->user->email) {
-                Mail::to($fresh->user->email)->send(new SuratDisetujui($fresh));
-            }
-        } catch (\Throwable $e) {
-            Log::error('Gagal kirim email persetujuan: ' . $e->getMessage());
+        $fresh = Surat::with(['user', 'validator'])->find($surat->id);
+        if ($fresh?->user?->email) {
+            Notifier::mail($fresh->user->email, new SuratDisetujui($fresh), 'Gagal kirim email persetujuan');
         }
     }
 
     private function sendRevisionEmail(Surat $surat): void
     {
-        try {
-            $fresh = Surat::with(['user', 'validator'])->find($surat->id);
-            if ($fresh->user && $fresh->user->email) {
-                Mail::to($fresh->user->email)->send(new SuratDirevisi($fresh));
-            }
-        } catch (\Throwable $e) {
-            Log::error('Gagal kirim email revisi: ' . $e->getMessage());
+        $fresh = Surat::with(['user', 'validator'])->find($surat->id);
+        if ($fresh?->user?->email) {
+            Notifier::mail($fresh->user->email, new SuratDirevisi($fresh), 'Gagal kirim email revisi');
         }
     }
 }

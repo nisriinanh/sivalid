@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Sertifikat;
 use App\Models\User;
 use App\Mail\SertifikatDiajukan;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -97,12 +97,8 @@ class SertifikatController extends Controller
 
         $sertifikatFresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
         $kepala = User::where('role', 'kepala')->where('is_active', true)->first();
-        if ($kepala) {
-            try {
-                Mail::to($kepala->email)->send(new SertifikatDiajukan($sertifikatFresh));
-            } catch (\Throwable $e) {
-                \Log::error('Gagal kirim email pengajuan sertifikat: ' . $e->getMessage());
-            }
+        if ($kepala && $sertifikatFresh) {
+            Notifier::mail($kepala->email, new SertifikatDiajukan($sertifikatFresh), 'Gagal kirim email pengajuan sertifikat');
         }
 
         return redirect()->route('sertifikat.index')
@@ -180,12 +176,8 @@ class SertifikatController extends Controller
 
         $sertifikatFresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
         $kepala = User::where('role', 'kepala')->where('is_active', true)->first();
-        if ($kepala) {
-            try {
-                Mail::to($kepala->email)->send(new SertifikatDiajukan($sertifikatFresh));
-            } catch (\Throwable $e) {
-                \Log::error('Gagal kirim email pengajuan ulang sertifikat: ' . $e->getMessage());
-            }
+        if ($kepala && $sertifikatFresh) {
+            Notifier::mail($kepala->email, new SertifikatDiajukan($sertifikatFresh), 'Gagal kirim email pengajuan ulang sertifikat');
         }
 
         return redirect()->route('sertifikat.index')

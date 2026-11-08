@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Sertifikat;
 use App\Mail\SertifikatDisetujui;
 use App\Mail\SertifikatDirevisi;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -249,25 +249,17 @@ class ValidasiSertifikatController extends Controller
 
     private function sendApprovalEmail(Sertifikat $sertifikat): void
     {
-        try {
-            $fresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
-            if ($fresh->uploader && $fresh->uploader->email) {
-                Mail::to($fresh->uploader->email)->send(new SertifikatDisetujui($fresh));
-            }
-        } catch (\Throwable $e) {
-            Log::error('Email approval error: ' . $e->getMessage());
+        $fresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
+        if ($fresh?->uploader?->email) {
+            Notifier::mail($fresh->uploader->email, new SertifikatDisetujui($fresh), 'Email approval error');
         }
     }
 
     private function sendRevisionEmail(Sertifikat $sertifikat): void
     {
-        try {
-            $fresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
-            if ($fresh->uploader && $fresh->uploader->email) {
-                Mail::to($fresh->uploader->email)->send(new SertifikatDirevisi($fresh));
-            }
-        } catch (\Throwable $e) {
-            Log::error('Email revision error: ' . $e->getMessage());
+        $fresh = Sertifikat::with(['uploader', 'validator'])->find($sertifikat->id);
+        if ($fresh?->uploader?->email) {
+            Notifier::mail($fresh->uploader->email, new SertifikatDirevisi($fresh), 'Email revision error');
         }
     }
 }

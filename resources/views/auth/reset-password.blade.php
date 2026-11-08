@@ -10,7 +10,11 @@
     <link rel="icon" type="image/png" href="{{ asset(config('site.favicon', 'images/logo.png')) }}">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --accent: #4338ca; --accent-glow: rgba(67,56,202,.1); }
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-glow: rgba(5,150,105,.15);
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
@@ -33,19 +37,19 @@
         }
         .bg-orb-1 {
             width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(67,56,202,.3), transparent 70%);
+            background: radial-gradient(circle, rgba(5,150,105,.35), transparent 70%);
             top: -15%; left: -10%;
             animation: float-1 12s ease-in-out infinite;
         }
         .bg-orb-2 {
             width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(99,102,241,.25), transparent 70%);
+            background: radial-gradient(circle, rgba(13,148,136,.3), transparent 70%);
             bottom: -10%; right: -8%;
             animation: float-2 10s ease-in-out infinite;
         }
         .bg-orb-3 {
             width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(129,140,248,.2), transparent 70%);
+            background: radial-gradient(circle, rgba(52,211,153,.25), transparent 70%);
             top: 50%; left: 60%;
             animation: float-3 14s ease-in-out infinite;
         }
@@ -85,7 +89,7 @@
             background: #ffffff;
             border-radius: 24px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 20px 60px rgba(0,0,0,.06), 0 0 100px rgba(67,56,202,.04);
+            box-shadow: 0 20px 60px rgba(0,0,0,.06), 0 0 100px rgba(5,150,105,.04);
             overflow: hidden;
             animation: card-in .8s cubic-bezier(.16,1,.3,1) both;
         }
@@ -112,22 +116,22 @@
             height: 72px;
             margin: 0 auto 18px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            background: linear-gradient(135deg, #ecfdf5, #f0fdfa);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: 0 4px 16px rgba(67,56,202,.15);
+            box-shadow: 0 4px 16px rgba(5,150,105,.1);
         }
         .icon-container i {
             font-size: 1.8rem;
-            color: #4338ca;
+            color: var(--primary);
         }
         .icon-container::after {
             content: '';
             position: absolute; inset: -4px;
             border-radius: 50%;
-            border: 2px solid rgba(67,56,202,.12);
+            border: 2px solid rgba(5,150,105,.12);
             animation: ring-pulse 3s ease-in-out infinite;
         }
         @keyframes ring-pulse {
@@ -188,15 +192,15 @@
         .input-wrapper input.form-control::placeholder { color: #94a3b8; }
         .input-wrapper input.form-control:focus {
             background: #ffffff;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
             outline: none;
         }
         .input-wrapper input.form-control.is-invalid {
             border-color: #f87171;
             box-shadow: 0 0 0 3px rgba(248,113,113,.1);
         }
-        .input-wrapper:has(input.form-control:focus) .input-icon { color: var(--accent); }
+        .input-wrapper:has(input.form-control:focus) .input-icon { color: var(--primary); }
 
         /* Password Toggle */
         .pwd-toggle {
@@ -225,7 +229,7 @@
             width: 100%;
             padding: 13px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #4338ca, #6366f1);
+            background: linear-gradient(135deg, #059669, #0d9488);
             color: #fff;
             font-weight: 700;
             font-size: .92rem;
@@ -247,7 +251,7 @@
         }
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(67,56,202,.3);
+            box-shadow: 0 8px 30px rgba(5,150,105,.3);
             color: #fff;
         }
         .btn-submit:hover::before { transform: translateX(100%); }
@@ -260,7 +264,7 @@
             font-size: .82rem;
         }
         .reset-footer a {
-            color: #059669;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
             transition: all .2s;
@@ -271,10 +275,10 @@
             position: absolute;
             bottom: -2px; left: 0;
             width: 0; height: 1.5px;
-            background: #059669;
+            background: var(--primary);
             transition: width .3s;
         }
-        .reset-footer a:hover { color: #047857; }
+        .reset-footer a:hover { color: var(--primary-dark); }
         .reset-footer a:hover::after { width: 100%; }
 
         @media (max-width: 480px) {

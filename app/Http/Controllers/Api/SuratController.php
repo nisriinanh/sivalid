@@ -8,10 +8,10 @@ use App\Models\Unit;
 use App\Models\Setting;
 use App\Models\User;
 use App\Mail\SuratDiajukan;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use setasign\Fpdi\Fpdi;
@@ -130,13 +130,9 @@ class SuratController extends Controller
 
         $surat->load(['user', 'validator', 'unit']);
 
-        try {
-            $kepala = $unit->kepalas()->first();
-            if ($kepala) {
-                Mail::to($kepala->email)->send(new SuratDiajukan($surat));
-            }
-        } catch (\Throwable $e) {
-            Log::error('Gagal kirim email pengajuan surat: ' . $e->getMessage());
+        $kepala = $unit->kepalas()->first();
+        if ($kepala) {
+            Notifier::mail($kepala->email, new SuratDiajukan($surat), 'Gagal kirim email pengajuan surat');
         }
 
         return response()->json([
@@ -240,14 +236,10 @@ class SuratController extends Controller
         $surat->update($updateData);
         $surat->load(['user', 'validator', 'unit']);
 
-        try {
-            $unit = Unit::find($surat->unit_id);
-            $kepala = $unit?->kepalas()->first();
-            if ($kepala) {
-                Mail::to($kepala->email)->send(new SuratDiajukan($surat));
-            }
-        } catch (\Throwable $e) {
-            Log::error('Gagal kirim email: ' . $e->getMessage());
+        $unit = Unit::find($surat->unit_id);
+        $kepala = $unit?->kepalas()->first();
+        if ($kepala) {
+            Notifier::mail($kepala->email, new SuratDiajukan($surat), 'Gagal kirim email pengajuan ulang surat');
         }
 
         return response()->json([

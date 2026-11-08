@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Mail\SuratDisetujui;
 use App\Mail\SuratDirevisi;
+use App\Support\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use setasign\Fpdi\Fpdi;
@@ -355,13 +355,9 @@ class ValidasiController extends Controller
      */
     private function sendApprovalEmail(Surat $surat): void
     {
-        try {
-            $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
-            if ($suratFresh->user && $suratFresh->user->email) {
-                Mail::to($suratFresh->user->email)->send(new SuratDisetujui($suratFresh));
-            }
-        } catch (\Throwable $e) {
-            \Log::error('Gagal kirim email persetujuan (Surat ' . $surat->nomor_surat . '): ' . $e->getMessage());
+        $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
+        if ($suratFresh?->user?->email) {
+            Notifier::mail($suratFresh->user->email, new SuratDisetujui($suratFresh), 'Gagal kirim email persetujuan (Surat ' . $surat->nomor_surat . ')');
         }
     }
 
@@ -370,13 +366,9 @@ class ValidasiController extends Controller
      */
     private function sendRevisionEmail(Surat $surat): void
     {
-        try {
-            $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
-            if ($suratFresh->user && $suratFresh->user->email) {
-                Mail::to($suratFresh->user->email)->send(new SuratDirevisi($suratFresh));
-            }
-        } catch (\Throwable $e) {
-            \Log::error('Gagal kirim email revisi (Surat ' . $surat->nomor_surat . '): ' . $e->getMessage());
+        $suratFresh = Surat::with(['user', 'validator'])->find($surat->id);
+        if ($suratFresh?->user?->email) {
+            Notifier::mail($suratFresh->user->email, new SuratDirevisi($suratFresh), 'Gagal kirim email revisi (Surat ' . $surat->nomor_surat . ')');
         }
     }
 

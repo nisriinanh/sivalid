@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Surat;
 use App\Models\UnitUser;
 use App\Services\FcmService;
+use App\Support\Notifier;
 use Illuminate\Support\Str;
 
 class SuratObserver
@@ -49,12 +50,12 @@ class SuratObserver
         $pengaju = $surat->user?->name ?? 'Staff';
         $judul = $surat->nama_surat ?: 'Surat';
 
-        app(FcmService::class)->sendToUsers(
+        Notifier::fcm(fn () => app(FcmService::class)->sendToUsers(
             $userIds,
             'Surat Baru Menunggu Validasi',
             Str::limit("{$judul} dari {$pengaju}", 140),
             ['type' => 'surat', 'scope' => 'validasi', 'id' => (string) $surat->id],
-        );
+        ));
     }
 
     private function notifyOwner(Surat $surat): void
@@ -70,11 +71,11 @@ class SuratObserver
             ? "{$judul} telah disetujui."
             : Str::limit("{$judul} perlu direvisi. " . ($surat->catatan_revisi ?? ''), 140);
 
-        app(FcmService::class)->sendToUsers(
+        Notifier::fcm(fn () => app(FcmService::class)->sendToUsers(
             [$surat->user_id],
             $approved ? 'Surat Disetujui' : 'Surat Perlu Direvisi',
             $body,
             ['type' => 'surat', 'scope' => 'status', 'id' => (string) $surat->id],
-        );
+        ));
     }
 }
