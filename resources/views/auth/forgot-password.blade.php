@@ -116,22 +116,22 @@
             height: 72px;
             margin: 0 auto 18px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            background: linear-gradient(135deg, #ecfdf5, #f0fdfa);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: 0 4px 16px rgba(67,56,202,.1);
+            box-shadow: 0 4px 16px rgba(5,150,105,.1);
         }
         .icon-container i {
             font-size: 1.8rem;
-            color: #4338ca;
+            color: var(--primary);
         }
         .icon-container::after {
             content: '';
             position: absolute; inset: -4px;
             border-radius: 50%;
-            border: 2px solid rgba(67,56,202,.12);
+            border: 2px solid rgba(5,150,105,.12);
             animation: ring-pulse 3s ease-in-out infinite;
         }
         @keyframes ring-pulse {
@@ -192,15 +192,15 @@
         .input-wrapper input.form-control::placeholder { color: #94a3b8; }
         .input-wrapper input.form-control:focus {
             background: #ffffff;
-            border-color: #4338ca;
-            box-shadow: 0 0 0 3px rgba(67,56,202,.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
             outline: none;
         }
         .input-wrapper input.form-control.is-invalid {
             border-color: #f87171;
             box-shadow: 0 0 0 3px rgba(248,113,113,.1);
         }
-        .input-wrapper:has(input.form-control:focus) .input-icon { color: #4338ca; }
+        .input-wrapper:has(input.form-control:focus) .input-icon { color: var(--primary); }
 
         .invalid-feedback {
             font-size: .75rem;
@@ -214,7 +214,7 @@
             width: 100%;
             padding: 13px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #4338ca, #6366f1);
+            background: linear-gradient(135deg, #059669, #0d9488);
             color: #fff;
             font-weight: 700;
             font-size: .92rem;
@@ -236,7 +236,7 @@
         }
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(67,56,202,.3);
+            box-shadow: 0 8px 30px rgba(5,150,105,.3);
             color: #fff;
         }
         .btn-submit:hover::before { transform: translateX(100%); }
